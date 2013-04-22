@@ -60,21 +60,42 @@ function layout() {
 
 function prepareImage() {
   // 总图片数量
-  IMAGE_TOTAL = $('.origin').length;
+  IMAGE_TOTAL = 0;
   IMAGE_CURRENT = 0;
 
-  // 读取图片信息
+  // 加载
   IMAGES = [];
-  $('.origin').each(function(){
-    var image = {};
-    image.width = this.width;
-    image.height = this.height;
-    image.src = this.src;
-    IMAGES.push(image);
+  $('.origin').each(function() {
+    var self = this;
+    $(this).bind('load', function() {
+      var image = {};
+          image.width = self.width;
+          image.height = self.height;
+          image.src = self.src;
+      IMAGES.push(image);
+      IMAGE_TOTAL = IMAGES.length;
+    });
   });
 }
 
-function animation() {
+function preload() {
+  var preload = $('img[preload]'),
+      preload_loaded = 0,
+      preload_total = preload.length;
+
+  preload.each(function(){
+    $(this).bind('load', function() {
+      preload_loaded++;
+      console.log('预载入完成' + preload_loaded + '/' + preload_total);
+      if( preload_loaded >= preload_total ) {
+        $('#preload').fadeOut();
+        startAnimation();
+      }
+    });
+  });
+}
+
+function startAnimation() {
   // 动画时间就1s吧
   DURATION = DURATION ? DURATION : 1;
   
@@ -114,13 +135,12 @@ function doAnimation() {
   fx( ANIMATIONS[random(ANIMATION_TOTAL)] );
 }
 
-$(window).bind('load', function() {
+$(document).ready(function() {
   layout();
   prepareImage();
-  animation();
+  preload()
 });
 $(window).resize(function(){
   layout();
-  prepareImage();
 });
 

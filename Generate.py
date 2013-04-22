@@ -5,7 +5,8 @@ CONFIG = {
     'page_title'         : 'ただ一人の楽園', # 静态页面标题
     'animation_duration' : 1,               # 动画持续时间
     'animation_delay'    : 6,               # 图片更换间隔
-    'cube_size'          : 100              # 区块大小
+    'cube_size'          : 100,             # 区块大小
+    'preload_number'     : 5,               # 运行js前读取的图片张数
 }
 
 # 分隔符
@@ -23,10 +24,10 @@ HTML = '''
     <link rel="stylesheet" href="inc/pixivwall.css">
 </head>
 <body>
+    <div id="preload">正在预读图片</div>
     <div id="wall-wrapper"></div>
     <div id="origins">%s</div>
     <script src="inc/jquery-1.9.1.min.js"></script>
-    <script src="inc/jquery.transit.min.js"></script>
     <script src="inc/pixivwall.animations.js"></script>
     <script src="inc/pixivwall.js"></script>
     <script>
@@ -45,9 +46,17 @@ def GenerateHTML():
     IMAGE_LIST = os.listdir(IMAGE_PATH)
 
     IMAGES = '\n'
+    i = 0
     for image in IMAGE_LIST:
         if image == '.gitignore' : continue
-        IMAGES += '\t\t<img class="origin" src="images/' + image + '" />\n'
+        output = '\t\t<img class="origin" src="images/' + image + '"'
+
+        if i < CONFIG['preload_number']:
+            output += ' preload'
+            i += 1
+
+        output += ' />\n'
+        IMAGES += output
     IMAGES += '\t'
     # 生成新静态页面
     f = open('index.html', 'w')

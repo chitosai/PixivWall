@@ -9,6 +9,42 @@ body{
 	padding: 0;
 }
 
+#preload{
+	animation: preload 2s ease 0 infinite;
+	-ms-animation: preload 2s ease 0 infinite;
+	-webkit-animation: preload 2s ease 0 infinite;
+	border: 20px solid;
+	border-radius: 250px;
+	box-shadow: 0 0 10px rgba(255, 255, 255, .75), inset 0 0 10px rgba(255, 255, 255, .75);
+	color: #fff;
+	font-size: 36px;
+	text-align: center;
+	line-height: 250px;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -125px;
+	margin-top: -125px;
+	z-index: 9;
+}
+@keyframes preload{
+	0%  { transform: scale(1); }
+	35% { transform: scale(1); }
+	50% { transform: scale(1.1); }
+	65% { transform: scale(1); }
+	100%{ transform: scale(1); }
+}
+@-webkit-keyframes preload{
+	0%  { -webkit-transform: scale(1); }
+	35% { -webkit-transform: scale(1); }
+	50% { -webkit-transform: scale(1.1); }
+	65% { -webkit-transform: scale(1); }
+	100%{ -webkit-transform: scale(1); }
+}
+
+
 #wall{
 	position: relative;
 }
