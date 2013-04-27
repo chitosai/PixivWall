@@ -22,20 +22,19 @@ HTML = '''
     <meta charset="UTF-8">
     <title>%s</title>
     <link rel="stylesheet" href="inc/pixivwall.css">
-    <script>
-        DURATION = %s;
-        DELAY = %s;
-        CUBE_SIZE = %s;
-        PRELOAD_TOTAL = %s;
-    </script>
-    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.0.min.js"></script>
-    <script src="inc/pixivwall.animations.js"></script>
-    <script src="inc/pixivwall.js"></script>
 </head>
 <body>
     <div id="loading">正在预读图片</div>
     <div id="wall-wrapper"></div>
     <div id="origins">%s</div>
+    <script>
+        DURATION = %s;
+        DELAY = %s;
+        CUBE_SIZE = %s;
+    </script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.0.min.js"></script>
+    <script src="inc/pixivwall.animations.js"></script>
+    <script src="inc/pixivwall.js"></script>
     <script type="text/javascript">
 
       var _gaq = _gaq || [];
@@ -64,10 +63,10 @@ def GenerateHTML():
     i = 0
     for image in IMAGE_LIST:
         if image == '.gitignore' : continue
-        output = '\t\t<img class="origin" src="images/' + image + '"'
+        output = '\t\t<img class="origin" src="images/transparent.gif" data-src="images/' + image + '"'
 
         if i < CONFIG['preload_number']:
-            output += ' onload=\'loaded();\''
+            output += ' preload'
             i += 1
 
         output += ' />\n'
@@ -77,11 +76,10 @@ def GenerateHTML():
     f = open('index.html', 'w')
     f.write( HTML % (
         CONFIG['page_title'],
+        IMAGES, 
         CONFIG['animation_duration'],
         CONFIG['animation_delay'], 
         CONFIG['cube_size'],
-        CONFIG['preload_number'],
-        IMAGES, 
     ))
     f.close()
 

@@ -63,28 +63,35 @@ function prepareImage() {
   IMAGE_TOTAL = 0;
   IMAGE_CURRENT = 0;
 
-  // 加载
+  // 预加载
+  var preload = $('.origin[preload]'),
+      preload_loaded = 0,
+      preload_total = preload.length;
+
+  preload.load(function() {
+    preload_loaded++;
+    console.log('预加载 ' + preload_loaded + '/' + preload_total);
+    if( preload_loaded >= preload_total ) {
+      $('#loading').fadeOut();
+      startAnimation();
+    }
+  });
+
+  // 加载图片
   IMAGES = [];
   $('.origin').each(function() {
-    var self = this;
+    var self = this,
+        src = $(this).data('src');
+
     $(this).bind('load', function() {
       var image = {};
           image.width = self.width;
           image.height = self.height;
-          image.src = self.src;
+          image.src = src;
       IMAGES.push(image);
       IMAGE_TOTAL = IMAGES.length;
-    });
+    }).attr('src', src);
   });
-}
-
-function loaded() {
-  if( typeof PRELOAD_LOADED == 'undefined' ) PRELOAD_LOADED = 1;
-  else PRELOAD_LOADED++;
-  if( PRELOAD_LOADED >= PRELOAD_TOTAL ) {
-    $('#preload').fadeOut();
-    startAnimation();
-  }
 }
 
 function startAnimation() {
