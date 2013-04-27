@@ -31,6 +31,11 @@ HTML = '''
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.0.min.js"></script>
     <script src="inc/pixivwall.animations.js"></script>
     <script src="inc/pixivwall.js"></script>
+</head>
+<body>
+    <div id="loading">正在预读图片</div>
+    <div id="wall-wrapper"></div>
+    <div id="origins">%s</div>
     <script type="text/javascript">
 
       var _gaq = _gaq || [];
@@ -45,11 +50,6 @@ HTML = '''
       })();
 
     </script>
-</head>
-<body>
-    <div id="loading">正在预读图片</div>
-    <div id="wall-wrapper"></div>
-    <div id="origins">%s</div>
 </body>
 </html>
 '''
