@@ -78,21 +78,13 @@ function prepareImage() {
   });
 }
 
-function preload() {
-  var preload = $('img[preload]'),
-      preload_loaded = 0,
-      preload_total = preload.length;
-
-  preload.each(function(){
-    $(this).bind('load', function() {
-      preload_loaded++;
-      console.log('预载入完成' + preload_loaded + '/' + preload_total);
-      if( preload_loaded >= preload_total ) {
-        $('#preload').fadeOut();
-        startAnimation();
-      }
-    });
-  });
+function loaded() {
+  if( typeof PRELOAD_LOADED == 'undefined' ) PRELOAD_LOADED = 1;
+  else PRELOAD_LOADED++;
+  if( PRELOAD_LOADED >= PRELOAD_TOTAL ) {
+    $('#preload').fadeOut();
+    startAnimation();
+  }
 }
 
 function startAnimation() {
@@ -138,7 +130,6 @@ function doAnimation() {
 $(document).ready(function() {
   layout();
   prepareImage();
-  preload()
 });
 $(window).resize(function(){
   layout();

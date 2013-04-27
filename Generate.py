@@ -22,19 +22,15 @@ HTML = '''
     <meta charset="UTF-8">
     <title>%s</title>
     <link rel="stylesheet" href="inc/pixivwall.css">
-</head>
-<body>
-    <div id="preload">正在预读图片</div>
-    <div id="wall-wrapper"></div>
-    <div id="origins">%s</div>
-    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.0.min.js"></script>
-    <script src="inc/pixivwall.animations.js"></script>
-    <script src="inc/pixivwall.js"></script>
     <script>
         DURATION = %s;
         DELAY = %s;
         CUBE_SIZE = %s;
+        PRELOAD_TOTAL = %s;
     </script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.0.min.js"></script>
+    <script src="inc/pixivwall.animations.js"></script>
+    <script src="inc/pixivwall.js"></script>
     <script type="text/javascript">
 
       var _gaq = _gaq || [];
@@ -49,6 +45,11 @@ HTML = '''
       })();
 
     </script>
+</head>
+<body>
+    <div id="loading">正在预读图片</div>
+    <div id="wall-wrapper"></div>
+    <div id="origins">%s</div>
 </body>
 </html>
 '''
@@ -66,7 +67,7 @@ def GenerateHTML():
         output = '\t\t<img class="origin" src="images/' + image + '"'
 
         if i < CONFIG['preload_number']:
-            output += ' preload'
+            output += ' onload=\'loaded();\''
             i += 1
 
         output += ' />\n'
@@ -76,10 +77,11 @@ def GenerateHTML():
     f = open('index.html', 'w')
     f.write( HTML % (
         CONFIG['page_title'],
-        IMAGES, 
         CONFIG['animation_duration'],
         CONFIG['animation_delay'], 
-        CONFIG['cube_size']
+        CONFIG['cube_size'],
+        CONFIG['preload_number'],
+        IMAGES, 
     ))
     f.close()
 

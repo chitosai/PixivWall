@@ -9,7 +9,7 @@ body{
 	padding: 0;
 }
 
-#preload{
+#loading{
 	animation: preload 2s ease 0 infinite;
 	-ms-animation: preload 2s ease 0 infinite;
 	-webkit-animation: preload 2s ease 0 infinite;
