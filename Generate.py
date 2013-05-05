@@ -63,8 +63,8 @@ def GenerateHTML():
     IMAGES = '\n'
     i = 0
     for image in IMAGE_LIST:
-        if image == '.gitignore' : continue
-        IMAGES += '\t\t<img class="origin" src="images/transparent.gif" data-src="images/' + image + '" />\n'
+        if image == '.gitignore': continue
+        IMAGES += '\t\t<img class="origin" data-src="images/' + image + '" />\n'
     IMAGES += '\t'
     # 生成新静态页面
     f = open('index.html', 'w')

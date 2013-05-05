@@ -68,7 +68,7 @@ function prepareImage() {
   $('.origin').each(function() {
     var self = this;
 
-    this.onload = function() {
+    $(this).on('load', function() {
       var image = {};
           image.width = self.width;
           image.height = self.height;
@@ -86,7 +86,7 @@ function prepareImage() {
       // 加载下一张图片
       var next = $(self).next();
       if( next.length ) next.attr('src', next.data('src'));
-    }
+    });
   });
 
   // 开始加载
@@ -96,7 +96,7 @@ function prepareImage() {
 
 
 function startAnimation() {
-  // 动画时间就1s吧
+  // 默认动画时间就1s吧
   DURATION = DURATION ? DURATION : 1;
   
   $('#loading').fadeOut();
@@ -110,9 +110,6 @@ function startAnimation() {
 function _void_() {}
 
 function doAnimation() {
-  // 切换图片
-  IMAGE_CURRENT++;
-  if( IMAGE_CURRENT >= IMAGE_TOTAL ) IMAGE_CURRENT = 0;
   var image = IMAGES[IMAGE_CURRENT];
 
   // 切换缓冲层 
@@ -138,6 +135,10 @@ function doAnimation() {
 
   // 随机选一种效果，翻转！
   fx( ANIMATIONS[random(ANIMATION_TOTAL)] );
+  
+  // 切换图片
+  IMAGE_CURRENT++;
+  if( IMAGE_CURRENT >= IMAGE_TOTAL ) IMAGE_CURRENT = 0;
 }
 
 $(document).ready(function() {
