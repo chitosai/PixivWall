@@ -31,6 +31,7 @@ HTML = '''
         DURATION = %s;
         DELAY = %s;
         CUBE_SIZE = %s;
+        PRELOAD = %s;
     </script>
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.0.min.js"></script>
     <script src="inc/pixivwall.animations.js"></script>
@@ -63,14 +64,7 @@ def GenerateHTML():
     i = 0
     for image in IMAGE_LIST:
         if image == '.gitignore' : continue
-        output = '\t\t<img class="origin" src="images/transparent.gif" data-src="images/' + image + '"'
-
-        if i < CONFIG['preload_number']:
-            output += ' preload'
-            i += 1
-
-        output += ' />\n'
-        IMAGES += output
+        IMAGES += '\t\t<img class="origin" src="images/transparent.gif" data-src="images/' + image + '" />\n'
     IMAGES += '\t'
     # 生成新静态页面
     f = open('index.html', 'w')
@@ -80,6 +74,7 @@ def GenerateHTML():
         CONFIG['animation_duration'],
         CONFIG['animation_delay'], 
         CONFIG['cube_size'],
+        CONFIG['preload_number']
     ))
     f.close()
 

@@ -59,49 +59,55 @@ function layout() {
 }
 
 function prepareImage() {
-  // 总图片数量
+  // 初始化图片数量
   IMAGE_TOTAL = 0;
   IMAGE_CURRENT = 0;
 
-  // 预加载
-  var preload = $('.origin[preload]'),
-      preload_loaded = 0,
-      preload_total = preload.length;
-
-  preload.load(function() {
-    preload_loaded++;
-    console.log('预加载 ' + preload_loaded + '/' + preload_total);
-    if( preload_loaded >= preload_total ) {
-      $('#loading').fadeOut();
-      startAnimation();
-    }
-  });
-
-  // 加载图片
+  // 绑定依次加载
   IMAGES = [];
   $('.origin').each(function() {
-    var self = this,
-        src = $(this).data('src');
+    var self = this;
 
     $(this).bind('load', function() {
       var image = {};
           image.width = self.width;
           image.height = self.height;
-          image.src = src;
+          image.src = self.src;
       IMAGES.push(image);
       IMAGE_TOTAL = IMAGES.length;
-    }).attr('src', src);
+
+      // 检查是否已经加载了足够多的图片
+      if( IMAGE_TOTAL > PRELOAD ) {
+        startAnimation();
+      } else {
+        console.log('预加载 ' + IMAGE_TOTAL + '/' + PRELOAD);
+      }
+
+      // 加载下一张图片
+      var next = $(self).next();
+      if( next.length ) next.attr('src', next.data('src'));
+    })
   });
+
+  // 开始加载
+  var first = $('.origin').eq(0);
+  first.attr('src', first.data('src'));
 }
+
 
 function startAnimation() {
   // 动画时间就1s吧
   DURATION = DURATION ? DURATION : 1;
   
+  $('#loading').fadeOut();
   doAnimation();
   // 开始循环
   LOOP = setInterval(doAnimation, DELAY * 1000);
+
+  startAnimation = _void_;
 }
+
+function _void_() {}
 
 function doAnimation() {
   // 切换图片
