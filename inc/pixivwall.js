@@ -68,7 +68,7 @@ function prepareImage() {
   $('.origin').each(function() {
     var self = this;
 
-    $(this).bind('load', function() {
+    this.onload = function() {
       var image = {};
           image.width = self.width;
           image.height = self.height;
@@ -86,7 +86,7 @@ function prepareImage() {
       // 加载下一张图片
       var next = $(self).next();
       if( next.length ) next.attr('src', next.data('src'));
-    })
+    }
   });
 
   // 开始加载
