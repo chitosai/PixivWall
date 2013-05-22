@@ -77,8 +77,9 @@ function prepareImage() {
       IMAGE_TOTAL = IMAGES.length;
 
       // 检查是否已经加载了足够多的图片
-      if( IMAGE_TOTAL >= PRELOAD ) {
+      if( IMAGE_TOTAL > PRELOAD ) {
         startAnimation();
+        console.log('预加载完毕');
       } else {
         console.log('预加载 ' + IMAGE_TOTAL + '/' + PRELOAD);
       }
