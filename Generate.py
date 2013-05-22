@@ -24,7 +24,7 @@ HTML = '''
     <link rel="stylesheet" href="inc/pixivwall.css">
 </head>
 <body>
-    <div id="loading">正在预读图片</div>
+    <div id="loading"><p>努力地加载图片</p></div>
     <div id="wall-wrapper"></div>
     <div id="origins">%s</div>
     <script>

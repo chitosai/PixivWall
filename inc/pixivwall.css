@@ -10,24 +10,24 @@ body{
 }
 
 #loading{
-	animation: preload 2s ease 0 infinite;
-	-ms-animation: preload 2s ease 0 infinite;
-	-webkit-animation: preload 2s ease 0 infinite;
-	border: 20px solid;
-	border-radius: 250px;
-	box-shadow: 0 0 10px rgba(255, 255, 255, .75), inset 0 0 10px rgba(255, 255, 255, .75);
-	color: #fff;
-	font-size: 36px;
+	background: rgba(0, 0, 0, .75);
 	text-align: center;
-	line-height: 250px;
-	width: 250px;
-	height: 250px;
-	position: absolute;
-	left: 50%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 99999;
+}
+#loading p{
+	background: url('loading.gif') center no-repeat;
+	color: #fff;
+	font-weight: bold;
+	font-size: 16px;
+	padding-top: 120px;
+	position: relative;
 	top: 50%;
-	margin-left: -125px;
-	margin-top: -125px;
-	z-index: 9;
+	margin-top: -100px;
 }
 @keyframes preload{
 	0%  { transform: scale(1); }

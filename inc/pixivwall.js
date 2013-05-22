@@ -77,7 +77,7 @@ function prepareImage() {
       IMAGE_TOTAL = IMAGES.length;
 
       // 检查是否已经加载了足够多的图片
-      if( IMAGE_TOTAL > PRELOAD ) {
+      if( IMAGE_TOTAL >= PRELOAD ) {
         startAnimation();
       } else {
         console.log('预加载 ' + IMAGE_TOTAL + '/' + PRELOAD);
@@ -135,7 +135,7 @@ function doAnimation() {
 
   // 随机选一种效果，翻转！
   fx( ANIMATIONS[random(ANIMATION_TOTAL)] );
-  
+
   // 切换图片
   IMAGE_CURRENT++;
   if( IMAGE_CURRENT >= IMAGE_TOTAL ) IMAGE_CURRENT = 0;
