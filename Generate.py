@@ -24,7 +24,13 @@ HTML = '''
     <link rel="stylesheet" href="inc/pixivwall.css">
 </head>
 <body>
-    <div id="loading"><p>努力地加载图片</p></div>
+    <div id="loading">
+        <img src="inc/loading.png" alt="" id="preloader" />
+        <p>
+            努力地加载图片 
+            <span id="loading-process"></span>
+        </p>
+    </div>
     <div id="wall-wrapper"></div>
     <div id="origins">%s</div>
     <script>

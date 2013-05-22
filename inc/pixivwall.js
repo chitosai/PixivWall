@@ -79,9 +79,9 @@ function prepareImage() {
       // 检查是否已经加载了足够多的图片
       if( IMAGE_TOTAL > PRELOAD ) {
         startAnimation();
-        console.log('预加载完毕');
       } else {
         console.log('预加载 ' + IMAGE_TOTAL + '/' + PRELOAD);
+        $('#loading-process').text(IMAGE_TOTAL + '/' + PRELOAD);
       }
 
       // 加载下一张图片
@@ -104,6 +104,8 @@ function startAnimation() {
   doAnimation();
   // 开始循环
   LOOP = setInterval(doAnimation, DELAY * 1000);
+  
+  console.log('预加载完成');
 
   startAnimation = _void_;
 }
