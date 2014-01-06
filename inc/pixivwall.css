@@ -35,8 +35,8 @@ body{
 	top: 45%;
 	width: 64px;
 	margin: 0 auto;
-	animation: preload 2.5s ease 0 infinite;
-	-webkit-animation: preload 2.5s ease 0 infinite;
+	animation: preload 2.5s ease 0s infinite;
+	-webkit-animation: preload 2.5s ease 0s infinite;
 }
 @keyframes preload{
 	0%  { transform: rotate(0); }
