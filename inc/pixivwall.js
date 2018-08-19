@@ -1,7 +1,3 @@
-// 动画列表
-ANIMATIONS = ['fade', 'scale', 'moveTop', 'moveBottom', 'moveLeft', 'moveRight'];
-ANIMATION_TOTAL = ANIMATIONS.length;
-
 // 布局
 function layout() {
   // 计算需要多少方块来填充屏幕
@@ -80,7 +76,6 @@ function prepareImage() {
       if( IMAGE_TOTAL > PRELOAD ) {
         startAnimation();
       } else {
-        console.log('预加载 ' + IMAGE_TOTAL + '/' + PRELOAD);
         $('#loading-process').text(IMAGE_TOTAL + '/' + PRELOAD);
       }
 
@@ -104,8 +99,6 @@ function startAnimation() {
   doAnimation();
   // 开始循环
   LOOP = setInterval(doAnimation, DELAY * 1000);
-  
-  console.log('预加载完成');
 
   startAnimation = _void_;
 }
@@ -137,7 +130,7 @@ function doAnimation() {
   }
 
   // 随机选一种效果，翻转！
-  fx( ANIMATIONS[random(ANIMATION_TOTAL)] );
+  fx();
 
   // 切换图片
   IMAGE_CURRENT++;
