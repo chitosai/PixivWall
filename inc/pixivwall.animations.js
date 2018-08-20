@@ -83,6 +83,19 @@ const ANIMATIONS = [
 		}, {
 			value: 1
 		}]
+	},
+	// rotate
+	{
+		rotate: [{
+			value: -100
+		}, {
+			value: 0
+		}],
+		scale: [{
+			value: 3
+		}, {
+			value: 1
+		}]
 	}
 ];
 
@@ -95,11 +108,7 @@ function _applyFx(fx, opt) {
 				default: return value;
 			}
 		} else if( key.startsWith('scale') ) {
-			switch(value) {
-				case 0: return 2;
-				case 2: return 0;
-				case 1: return 1;
-			}
+			return 1/value;
 		} else {
 			return value;
 		}
