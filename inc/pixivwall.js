@@ -140,7 +140,7 @@ function doAnimation() {
   fx();
 
   // 下载地址
-  $('#download-button').attr('href', IMAGES[IMAGE_CURRENT].fullSizeSrc);
+  $('#konachan').attr('href', IMAGES[IMAGE_CURRENT].fullSizeSrc);
   // 切换图片
   IMAGE_CURRENT++;
   if( IMAGE_CURRENT >= LOADED_IMAGE_COUNT ) {

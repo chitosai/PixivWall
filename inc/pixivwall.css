@@ -199,11 +199,3 @@ body{
 #konachan{
 	color: white;
 }
-#download-button{
-	background: #0096FA;
-	color: white;
-	display: inline-block;
-	text-decoration: none;
-	padding: 4px 5px;
-	border-radius: 3px;
-}
