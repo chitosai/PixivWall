@@ -184,13 +184,9 @@ body{
 	font-size: 12px;
 	padding: 10px;
 	position: fixed;
-	bottom: -55px;
+	bottom: 15px;
 	left: 15px;
 	z-index: 9;
-	transition: bottom .3s ease;
-}
-#info.active{
-	bottom: 15px;
 }
 #info p{
 	color: #ccc;

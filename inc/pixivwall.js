@@ -102,7 +102,6 @@ function prepareImage() {
 let LOOP = 0;
 function startAnimation() {
   $('#loading').fadeOut();
-  $('#info').addClass('active');
   doAnimation();
   // 开始循环
   LOOP = setInterval(doAnimation, DELAY * 1000);
