@@ -177,3 +177,33 @@ body{
 	50% { opacity: 1; }
 	100%{ transform: scale3d(3, 3, 3); opacity: .25; }
 }
+
+#info{
+	background: rgba(0, 0, 0, .5);
+	border-radius: 5px;
+	font-size: 12px;
+	padding: 10px;
+	position: fixed;
+	bottom: -55px;
+	left: 15px;
+	z-index: 9;
+	transition: bottom .3s ease;
+}
+#info.active{
+	bottom: 15px;
+}
+#info p{
+	color: #ccc;
+	margin: 0 0 3px;
+}
+#konachan{
+	color: white;
+}
+#download-button{
+	background: #69f;
+	color: white;
+	display: inline-block;
+	text-decoration: none;
+	padding: 4px 5px;
+	border-radius: 3px;
+}

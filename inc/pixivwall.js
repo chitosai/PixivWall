@@ -70,7 +70,8 @@ function prepareImage() {
     IMAGES = json.map(pic => ({
       width: pic.sample_width,
       height: pic.sample_height,
-      src: pic.sample_url
+      src: pic.sample_url,
+      fullSizeSrc: pic.file_url
     }));
     function _preloadImage(i) {
       const image = new Image();
@@ -101,6 +102,7 @@ function prepareImage() {
 let LOOP = 0;
 function startAnimation() {
   $('#loading').fadeOut();
+  $('#info').addClass('active');
   doAnimation();
   // 开始循环
   LOOP = setInterval(doAnimation, DELAY * 1000);
@@ -137,6 +139,8 @@ function doAnimation() {
   // 随机选一种效果，翻转！
   fx();
 
+  // 下载地址
+  $('#download-button').attr('href', IMAGES[IMAGE_CURRENT].fullSizeSrc);
   // 切换图片
   IMAGE_CURRENT++;
   if( IMAGE_CURRENT >= LOADED_IMAGE_COUNT ) {
