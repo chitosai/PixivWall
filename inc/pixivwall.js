@@ -54,40 +54,41 @@ function layout() {
   BUFFER_BACK = $('.buffer_b');
 }
 
+function preloadImage(i) {
+  const image = new Image();
+  image.src = IMAGES[i].src;
+  LOADED_IMAGE_COUNT++;
+}
+
 function prepareImage() {
   // 初始化图片数量
-  IMAGE_TOTAL = 0;
+  LOADED_IMAGE_COUNT = 0;
   IMAGE_CURRENT = 0;
-
-  // 绑定依次加载
   IMAGES = [];
-  $('.origin').each(function() {
-    var self = this;
 
-    $(this).on('load', function() {
-      var image = {};
-          image.width = self.width;
-          image.height = self.height;
-          image.src = self.src;
-      IMAGES.push(image);
-      IMAGE_TOTAL = IMAGES.length;
-
-      // 检查是否已经加载了足够多的图片
-      if( IMAGE_TOTAL > PRELOAD ) {
-        startAnimation();
-      } else {
-        $('#loading-process').text(IMAGE_TOTAL + '/' + PRELOAD);
-      }
-
-      // 加载下一张图片
-      var next = $(self).next();
-      if( next.length ) next.attr('src', next.data('src'));
-    });
+  $.getJSON('source.json', (json) => {
+    console.log(json);
+    IMAGES = json.map(pic => ({
+      width: pic.sample_width,
+      height: pic.sample_height,
+      src: pic.sample_url
+    }));
+    function _preloadImage(i) {
+      const image = new Image();
+      image.addEventListener('load', () => {
+        if( ++LOADED_IMAGE_COUNT < PRELOAD ) {
+          // 继续加载下一张图片
+          $('#loading-process').text(LOADED_IMAGE_COUNT + '/' + PRELOAD);
+          _preloadImage(LOADED_IMAGE_COUNT);
+        } else {
+          startAnimation();
+        }
+      });
+      image.src = IMAGES[i].src;
+    }
+    // 预加载 PRELOAD 张图片
+    _preloadImage(0);
   });
-
-  // 开始加载
-  var first = $('.origin').eq(0);
-  first.attr('src', first.data('src'));
 }
 
 
@@ -134,7 +135,13 @@ function doAnimation() {
 
   // 切换图片
   IMAGE_CURRENT++;
-  if( IMAGE_CURRENT >= IMAGE_TOTAL ) IMAGE_CURRENT = 0;
+  if( IMAGE_CURRENT >= LOADED_IMAGE_COUNT ) {
+    IMAGE_CURRENT = 0;
+  }
+  // 每播放一张图片就再往后预加载一张
+  if( LOADED_IMAGE_COUNT < IMAGES.length ) {
+    preloadImage(LOADED_IMAGE_COUNT);
+  }
 }
 
 $(document).ready(function() {
