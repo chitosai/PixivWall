@@ -84,6 +84,14 @@ function prepareImage() {
           startAnimation();
         }
       });
+      // 前几张图片加载时konachan好像有个验证流程，没法全自动走通，可能因为其中有一步是js跳转的吧
+      // 但是再次请求好像就可以了
+      image.addEventListener('error', (err) => {
+        console.error(err)
+        setTimeout(() => {
+          _preloadImage(i)
+        }, 100);
+      });
       image.src = IMAGES[i].src;
     }
     // 预加载 PRELOAD 张图片
@@ -91,7 +99,7 @@ function prepareImage() {
   });
 }
 
-
+let LOOP = 0;
 function startAnimation() {
   $('#loading').fadeOut();
   doAnimation();
