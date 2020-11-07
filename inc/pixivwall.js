@@ -67,7 +67,6 @@ function prepareImage() {
   IMAGES = [];
 
   $.getJSON('source.json', (json) => {
-    console.log(json);
     IMAGES = json.map(pic => ({
       width: pic.sample_width,
       height: pic.sample_height,
