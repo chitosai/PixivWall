@@ -93,18 +93,15 @@ function prepareImage() {
 
 
 function startAnimation() {
-  // 默认动画时间就1s吧
-  DURATION = DURATION ? DURATION : 1;
-  
   $('#loading').fadeOut();
   doAnimation();
   // 开始循环
   LOOP = setInterval(doAnimation, DELAY * 1000);
-
-  startAnimation = _void_;
 }
 
-function _void_() {}
+function pauseAnimation() {
+  clearInterval(LOOP);
+}
 
 function doAnimation() {
   var image = IMAGES[IMAGE_CURRENT];
@@ -144,9 +141,21 @@ function doAnimation() {
   }
 }
 
+// 当页面失去焦点时暂停动画
+function watchVisiblity() {
+  document.addEventListener('visibilitychange', (evt) => {
+    if( document.hidden ) {
+      pauseAnimation();
+    } else {
+      startAnimation();
+    }
+  });
+}
+
 $(document).ready(function() {
   layout();
   prepareImage();
+  watchVisiblity();
 });
 $(window).resize(function(){
   layout();
