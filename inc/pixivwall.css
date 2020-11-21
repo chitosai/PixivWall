@@ -182,7 +182,7 @@ body{
 	background: rgba(0, 0, 0, .5);
 	border-radius: 5px;
 	font-size: 12px;
-	padding: 10px;
+	padding: 5px 10px;
 	position: fixed;
 	bottom: 15px;
 	left: 15px;
@@ -190,7 +190,7 @@ body{
 }
 #info p{
 	color: #ccc;
-	margin: 0 0 5px;
+	margin: 0;
 }
 #konachan{
 	color: white;
