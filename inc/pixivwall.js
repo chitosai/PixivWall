@@ -54,7 +54,7 @@ function layout() {
   BUFFER_BACK = $('.buffer_b');
 }
 
-function preloadImage(i) {
+function preloadNextImage(i) {
   const image = new Image();
   image.src = IMAGES[i].src;
   LOADED_IMAGE_COUNT++;
@@ -68,34 +68,25 @@ function prepareImage() {
 
   $.getJSON('source.json', (json) => {
     IMAGES = json.map(pic => ({
-      width: pic.sample_width,
-      height: pic.sample_height,
-      src: pic.sample_url,
+      id: pic.id,
+      src: `/w/${pic.id}.jpg`,
       fullSizeSrc: pic.file_url
     }));
-    function _preloadImage(i) {
+    function preloadInitialImages(i) {
       const image = new Image();
       image.addEventListener('load', () => {
         if( ++LOADED_IMAGE_COUNT < PRELOAD ) {
           // 继续加载下一张图片
           $('#loading-process').text(LOADED_IMAGE_COUNT + '/' + PRELOAD);
-          _preloadImage(LOADED_IMAGE_COUNT);
+          preloadInitialImages(LOADED_IMAGE_COUNT);
         } else {
           startAnimation();
         }
       });
-      // 前几张图片加载时konachan好像有个验证流程，没法全自动走通，可能因为其中有一步是js跳转的吧
-      // 但是再次请求好像就可以了
-      image.addEventListener('error', (err) => {
-        console.error(err)
-        setTimeout(() => {
-          _preloadImage(i)
-        }, 100);
-      });
       image.src = IMAGES[i].src;
     }
     // 预加载 PRELOAD 张图片
-    _preloadImage(0);
+    preloadInitialImages(0);
   });
 }
 
@@ -147,7 +138,7 @@ function doAnimation() {
   }
   // 每播放一张图片就再往后预加载一张
   if( LOADED_IMAGE_COUNT < IMAGES.length ) {
-    preloadImage(LOADED_IMAGE_COUNT);
+    preloadNextImage(LOADED_IMAGE_COUNT);
   }
 }
 
