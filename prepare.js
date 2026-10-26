@@ -1,8 +1,8 @@
-// 需要 Node.js 18 及以上
 // 每周一 00:00 执行（服务器时区）
-// 0 0 * * 1 node /home/TheC/www/extra/PixivWall/prepare.js
+// 0 0 * * 1 node /home/TheC/www/extra/PixivWall/prepare.js 
 const fs = require('fs');
 const path = require('path');
+const sharp = require('sharp');
 
 const imageDir = path.join(__dirname, 'w');
 const sourcePath = path.join(__dirname, 'source.json');
@@ -28,14 +28,23 @@ async function main() {
     await fs.promises.mkdir(imageDir, { recursive: true });
     for (const image of images) {
         const filePath = path.join(imageDir, `${image.id}.jpg`);
-        if (fs.existsSync(filePath)) continue;
+        if (!fs.existsSync(filePath)) {
+            const response = await request(image.jpeg_url);
+            await fs.promises.writeFile(filePath, Buffer.from(await response.arrayBuffer()));
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
 
-        const response = await request(image.jpeg_url);
-        await fs.promises.writeFile(filePath, Buffer.from(await response.arrayBuffer()));
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // 原图大于 2 MB 时进行压缩，等比缩至 3840×2160 范围内，再以质量 80 保存
+        if ((await fs.promises.stat(filePath)).size > 2 * 1024 * 1024) {
+            const buffer = await sharp(await fs.promises.readFile(filePath))
+                .resize(3840, 2160, { fit: 'inside', withoutEnlargement: true })
+                .jpeg({ quality: 80 })
+                .toBuffer();
+            await fs.promises.writeFile(filePath, buffer);
+        }
     }
 
-    // 下载完成后再更新列表、清理旧图片。
+    // 下载完成后再更新 json、清理旧图片
     await fs.promises.writeFile(sourcePath, JSON.stringify(images));
     const filenames = new Set(images.map(image => `${image.id}.jpg`));
     for (const file of await fs.promises.readdir(imageDir, { withFileTypes: true })) {
