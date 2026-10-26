@@ -19,9 +19,7 @@ body{
 	height: 100%;
 	z-index: 99999;
 }
-#loading-inner{
 
-}
 #loading p{
 	color: #fff;
 	font-weight: bold;
@@ -192,6 +190,7 @@ body{
 	color: #ccc;
 	margin: 0;
 }
-#konachan{
+#source-site-link {
 	color: white;
+	font-weight: bold;
 }
