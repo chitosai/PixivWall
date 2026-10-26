@@ -1,3 +1,5 @@
+let DISPLAYED_IMAGE = null;
+
 // 布局
 function layout() {
     // 计算需要多少方块来填充屏幕
@@ -61,6 +63,12 @@ function layout() {
     // 初始化缓冲层
     BUFFER_CURRENT = $('.buffer_a');
     BUFFER_BACK = $('.buffer_b');
+
+    // 重新布局后立即恢复当前图片，不推进轮播。
+    if (DISPLAYED_IMAGE) {
+        renderImage(DISPLAYED_IMAGE);
+        BUFFER_CURRENT.css('zIndex', 3);
+    }
 }
 
 function preloadNextImage(i) {
@@ -105,8 +113,11 @@ function prepareImage() {
     });
 }
 
-let LOOP = 0;
+let LOOP = null;
 function startAnimation() {
+    // 等预加载完成且页面可见后再启动，避免重复创建定时器
+    if (LOOP !== null || document.hidden || LOADED_IMAGE_COUNT < PRELOAD) return;
+
     $('#loading').fadeOut();
     doAnimation();
     // 开始循环
@@ -115,17 +126,10 @@ function startAnimation() {
 
 function pauseAnimation() {
     clearInterval(LOOP);
+    LOOP = null;
 }
 
-function doAnimation() {
-    var image = IMAGES[IMAGE_CURRENT];
-    if (!image || !image.width || !image.height) return;
-
-    // 切换缓冲层
-    var BUFFER_TMP = BUFFER_CURRENT;
-    BUFFER_CURRENT = BUFFER_BACK;
-    BUFFER_BACK = BUFFER_TMP;
-
+function renderImage(image) {
     // 更新缓冲层
     BUFFER_CURRENT.css({
         'backgroundImage': 'url(\'' + image.src + '\')'
@@ -140,6 +144,19 @@ function doAnimation() {
         const cube = this.parentNode;
         $(this).css('backgroundPosition', (dx - parseFloat(cube.style.left)) + 'px ' + (dy - parseFloat(cube.style.top)) + 'px');
     });
+}
+
+function doAnimation() {
+    var image = IMAGES[IMAGE_CURRENT];
+    if (!image || !image.width || !image.height) return;
+
+    // 切换缓冲层
+    var BUFFER_TMP = BUFFER_CURRENT;
+    BUFFER_CURRENT = BUFFER_BACK;
+    BUFFER_BACK = BUFFER_TMP;
+
+    renderImage(image);
+    DISPLAYED_IMAGE = image;
 
     // 随机选一种效果，翻转！
     fx();
