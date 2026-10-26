@@ -4,7 +4,7 @@
     "description": "PixivWall\r =======",
     "main": "prepare.js",
     "engines": {
-        "node": "^18.17.0 || >=20.3.0"
+        "node": ">=14.15.0"
     },
     "devDependencies": {},
     "scripts": {
@@ -21,6 +21,7 @@
     },
     "homepage": "https://github.com/chitosai/PixivWall#readme",
     "dependencies": {
-        "sharp": "^0.34.5"
+        "got": "11.8.6",
+        "sharp": "0.32.6"
     }
 }
