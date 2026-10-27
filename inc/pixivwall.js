@@ -1,4 +1,5 @@
 let DISPLAYED_IMAGE = null;
+let PRELOADING = false;
 
 // 布局
 function layout() {
@@ -71,14 +72,37 @@ function layout() {
     }
 }
 
-function preloadNextImage(i) {
+function preloadNextImage(onComplete) {
+    if (PRELOADING || LOADED_IMAGE_COUNT >= IMAGES.length) return;
+    PRELOADING = true;
+
+    const i = LOADED_IMAGE_COUNT;
     const image = new Image();
     image.addEventListener('load', () => {
         IMAGES[i].width = image.naturalWidth;
         IMAGES[i].height = image.naturalHeight;
+        LOADED_IMAGE_COUNT++;
+        PRELOADING = false;
+        if (onComplete) onComplete();
+    });
+    image.addEventListener('error', () => {
+        // 跳过失败图片，已加载的图片仍然可以继续轮播
+        IMAGES.splice(i, 1);
+        PRELOADING = false;
+        if (LOADED_IMAGE_COUNT < IMAGES.length) {
+            preloadNextImage(onComplete);
+        } else if (onComplete) {
+            onComplete();
+        }
     });
     image.src = IMAGES[i].src;
-    LOADED_IMAGE_COUNT++;
+}
+
+function showLoadError() {
+    pauseAnimation();
+    $('#loading').addClass('failed').show();
+    $('#preloader').attr('src', 'inc/load-error.svg');
+    $('#loading p').text('加载失败');
 }
 
 function prepareImage() {
@@ -88,35 +112,35 @@ function prepareImage() {
     IMAGES = [];
 
     $.getJSON('source.json', (json) => {
+        if (!Array.isArray(json) || !json.length) {
+            showLoadError();
+            return;
+        }
         IMAGES = json.map(pic => ({
             id: pic.id,
             src: `/w/${pic.id}.jpg`,
             fullSizeSrc: pic.file_url
         }));
-        function preloadInitialImages(i) {
-            const image = new Image();
-            image.addEventListener('load', () => {
-                IMAGES[i].width = image.naturalWidth;
-                IMAGES[i].height = image.naturalHeight;
-                if (++LOADED_IMAGE_COUNT < PRELOAD) {
-                    // 继续加载下一张图片
-                    $('#loading-process').text(LOADED_IMAGE_COUNT + '/' + PRELOAD);
-                    preloadInitialImages(LOADED_IMAGE_COUNT);
-                } else {
-                    startAnimation();
-                }
-            });
-            image.src = IMAGES[i].src;
+        function preloadInitialImages() {
+            const total = Math.min(PRELOAD, IMAGES.length);
+            $('#loading-process').text(LOADED_IMAGE_COUNT + '/' + total);
+            if (LOADED_IMAGE_COUNT < total) {
+                preloadNextImage(preloadInitialImages);
+            } else if (LOADED_IMAGE_COUNT) {
+                startAnimation();
+            } else {
+                showLoadError();
+            }
         }
-        // 预加载 PRELOAD 张图片
-        preloadInitialImages(0);
-    });
+        preloadInitialImages();
+    }).fail(showLoadError);
 }
 
 let LOOP = null;
 function startAnimation() {
     // 等预加载完成且页面可见后再启动，避免重复创建定时器
-    if (LOOP !== null || document.hidden || LOADED_IMAGE_COUNT < PRELOAD) return;
+    if (LOOP !== null || document.hidden || !LOADED_IMAGE_COUNT ||
+        LOADED_IMAGE_COUNT < Math.min(PRELOAD, IMAGES.length)) return;
 
     $('#loading').fadeOut();
     doAnimation();
@@ -170,7 +194,7 @@ function doAnimation() {
     }
     // 每播放一张图片就再往后预加载一张
     if (LOADED_IMAGE_COUNT < IMAGES.length) {
-        preloadNextImage(LOADED_IMAGE_COUNT);
+        preloadNextImage();
     }
 }
 
