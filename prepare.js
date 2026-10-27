@@ -14,10 +14,9 @@ const request = got.extend({
 });
 
 async function main() {
-    // 从 Yande.re 获取过去 30 天内评分最高的 20 张图片
-    const date = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-    const params = new URLSearchParams({ limit: 20, tags: `order:score date:>=${date}` });
-    const posts = await request(`https://yande.re/post.json?${params}`).json();
+    // 获取 Wallhaven 二次元热门第 4 页的前 20 张图片
+    const params = new URLSearchParams({ categories: '010', purity: '100', sorting: 'hot', order: 'desc' });
+    const { data: posts } = await request(`https://wallhaven.cc/api/v1/search?${params}`).json();
 
     if (!Array.isArray(posts) || !posts.length) throw new Error('图片列表为空或格式不正确');
     const images = posts.slice(0, 20);
@@ -26,18 +25,17 @@ async function main() {
     for (const image of images) {
         const filePath = path.join(imageDir, `${image.id}.jpg`);
         if (!fs.existsSync(filePath)) {
-            const buffer = await request(image.jpeg_url).buffer();
+            const buffer = await request(image.path).buffer();
             await fs.promises.writeFile(filePath, buffer);
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         // 原图大于 2 MB 时进行压缩，等比缩至 3840×2160 范围内，再以质量 80 保存
-        if ((await fs.promises.stat(filePath)).size > 2 * 1024 * 1024) {
-            const buffer = await sharp(await fs.promises.readFile(filePath))
-                .resize(3840, 2160, { fit: 'inside', withoutEnlargement: true })
-                .jpeg({ quality: 80 })
-                .toBuffer();
-            await fs.promises.writeFile(filePath, buffer);
+        const needsResize = (await fs.promises.stat(filePath)).size > 2 * 1024 * 1024;
+        const processor = sharp(await fs.promises.readFile(filePath));
+        if (needsResize || (await processor.metadata()).format !== 'jpeg') {
+            if (needsResize) processor.resize(3840, 2160, { fit: 'inside', withoutEnlargement: true });
+            await fs.promises.writeFile(filePath, await processor.jpeg({ quality: 80 }).toBuffer());
         }
     }
 

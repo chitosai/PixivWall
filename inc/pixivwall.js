@@ -119,7 +119,8 @@ function prepareImage() {
         IMAGES = json.map(pic => ({
             id: pic.id,
             src: `/w/${pic.id}.jpg`,
-            fullSizeSrc: pic.file_url
+            fullSizeSrc: pic.path,
+            sourceUrl: pic.url
         }));
         function preloadInitialImages() {
             const total = Math.min(PRELOAD, IMAGES.length);
@@ -186,7 +187,7 @@ function doAnimation() {
     fx();
 
     // 下载地址
-    $('#source-site-link').attr('href', `https://yande.re/post/show/${image.id}`);
+    $('#source-site-link').attr('href', image.sourceUrl);
     // 切换图片
     IMAGE_CURRENT++;
     if (IMAGE_CURRENT >= LOADED_IMAGE_COUNT) {
