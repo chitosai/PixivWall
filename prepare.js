@@ -42,9 +42,15 @@ async function main() {
     // 下载完成后再更新 json、清理旧图片
     await fs.promises.writeFile(sourcePath, JSON.stringify(images));
     const filenames = new Set(images.map(image => `${image.id}.jpg`));
-    for (const file of await fs.promises.readdir(imageDir, { withFileTypes: true })) {
-        if (file.isFile() && /\.(jpe?g|png|webp|gif)$/i.test(file.name) && !filenames.has(file.name)) {
+    const localImages = (await fs.promises.readdir(imageDir, { withFileTypes: true }))
+        .filter(file => file.isFile() && /\.(jpe?g|png|webp|gif)$/i.test(file.name));
+    let imageCount = localImages.length;
+    for (const file of localImages) {
+        // 避免图源不稳定时删除过多图片，至少保留 20 张
+        if (imageCount <= 20) break;
+        if (!filenames.has(file.name)) {
             await fs.promises.unlink(path.join(imageDir, file.name));
+            imageCount--;
         }
     }
     console.log(`已更新 ${images.length} 张图片`);
